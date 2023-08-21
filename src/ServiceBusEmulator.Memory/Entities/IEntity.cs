@@ -1,4 +1,4 @@
-﻿using ServiceBusEmulator.Memory.Delivering;
+﻿using ServiceBusEmulator.Memory.Entities.Delivering;
 
 namespace ServiceBusEmulator.Memory.Entities;
 

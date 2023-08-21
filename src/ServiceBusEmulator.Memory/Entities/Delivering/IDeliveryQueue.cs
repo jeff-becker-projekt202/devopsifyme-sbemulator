@@ -1,7 +1,7 @@
 ﻿using Amqp;
 using Amqp.Listener;
 
-namespace ServiceBusEmulator.Memory.Delivering;
+namespace ServiceBusEmulator.Memory.Entities.Delivering;
 
 internal interface IDeliveryQueue
 {

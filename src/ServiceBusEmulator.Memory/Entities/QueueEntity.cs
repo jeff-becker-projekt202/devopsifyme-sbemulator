@@ -1,10 +1,25 @@
 ﻿using Amqp;
-using ServiceBusEmulator.Memory.Delivering;
+using ServiceBusEmulator.Memory.Entities.Delivering;
+using System.Text.RegularExpressions;
 
 namespace ServiceBusEmulator.Memory.Entities;
 
-internal sealed class QueueEntity : IQueue, IEntity, IDisposable
+internal sealed class QueueEntity : IEntity, IDisposable
 {
+    // The name can contain only letters, numbers, periods, hyphens, underscores, tildes, slashes and backward slashes.
+    // The name must start and end with a letter or number.
+    // The name must be between 1 and 260 characters long.
+    private static readonly Regex RxValidName = new("^[A-Za-z0-9]$|^[A-Za-z0-9][\\w\\.\\-\\/~]{0,258}[A-Za-z0-9]$", RegexOptions.Compiled);
+
+    public static string GuardName(string name)
+    {
+        if (!RxValidName.IsMatch(name))
+        {
+            throw new ArgumentException(null, nameof(name));
+        }
+        return name;
+    }
+
     private bool _disposed;
     private readonly DeliveryQueue _deliveryQueue = new();
     private readonly List<Delivery> _deliveries = new();
@@ -15,6 +30,7 @@ internal sealed class QueueEntity : IQueue, IEntity, IDisposable
 
     internal QueueEntity(string name)
     {
+        GuardName(name);
         Name = name;
         Deliveries = _deliveries.AsReadOnly();
     }

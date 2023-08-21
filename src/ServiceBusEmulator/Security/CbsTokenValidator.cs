@@ -17,7 +17,7 @@ namespace ServiceBusEmulator.Security
 {
 
 
-    internal class CbsTokenValidator : ITokenValidator
+    public class CbsTokenValidator : ITokenValidator
     {
         private const string DefaultSharedAccessKeyName = "all";
         private const string DefaultSharedAccessKey = "CLwo3FQ3S39Z4pFOQDefaiUd1dSsli4XOAj3Y9Uh1E=";

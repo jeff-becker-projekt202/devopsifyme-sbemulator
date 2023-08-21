@@ -1,7 +1,7 @@
 ﻿using Amqp;
 using Amqp.Framing;
 
-namespace ServiceBusEmulator.Memory.Delivering;
+namespace ServiceBusEmulator.Memory.Entities.Delivering;
 
 public sealed class Delivery : IDelivery, IDisposable
 {

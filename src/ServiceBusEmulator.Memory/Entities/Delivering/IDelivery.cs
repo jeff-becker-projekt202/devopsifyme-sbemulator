@@ -1,9 +1,11 @@
-﻿namespace ServiceBusEmulator.Memory.Delivering;
+﻿using Amqp.Framing;
+
+namespace ServiceBusEmulator.Memory.Entities.Delivering;
 
 /// <summary>
-/// Provides message delivery information and means to wait for topic delivery.
+/// Provides message delivery information and means to wait for queue delivery.
 /// </summary>
-public interface ITopicDelivery
+public interface IDelivery
 {
     /// <summary>
     /// Gets the posted <see cref="Amqp.Message"/>.
@@ -16,9 +18,19 @@ public interface ITopicDelivery
     DateTime Posted { get; }
 
     /// <summary>
-    /// Gets the subscription delivery details.
+    /// Gets the date and time in UTC the message was processed or null if still processing.
     /// </summary>
-    IReadOnlyList<IDelivery> Subscriptions { get; }
+    DateTime? Processed { get; }
+
+    /// <summary>
+    /// Gets the <see cref="DeliveryState"/> of the message.
+    /// </summary>
+    DeliveryState State { get; }
+
+    /// <summary>
+    /// Gets the <see cref="DeliveryResult"/> of the message.
+    /// </summary>
+    DeliveryResult? Result { get; }
 
     /// <summary>
     /// Waits for the <see cref="Message"/> to be delivered asynchronously.

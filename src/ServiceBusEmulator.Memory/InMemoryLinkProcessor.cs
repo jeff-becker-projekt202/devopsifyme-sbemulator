@@ -3,9 +3,9 @@ using Amqp.Framing;
 using Amqp.Listener;
 using Microsoft.Extensions.Logging;
 using ServiceBusEmulator.Abstractions.Security;
-using ServiceBusEmulator.Memory.Delivering;
 using ServiceBusEmulator.Memory.Endpoints;
 using ServiceBusEmulator.Memory.Entities;
+using ServiceBusEmulator.Memory.Entities.Delivering;
 
 namespace ServiceBusEmulator.Memory;
 

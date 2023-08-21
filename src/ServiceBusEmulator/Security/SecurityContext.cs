@@ -8,11 +8,11 @@ using System.Security.Principal;
 
 namespace ServiceBusEmulator.Security
 {
-    internal sealed class SecurityContext : ISecurityContext
+    public sealed class SecurityContext : ISecurityContext
     {
         private static readonly IPrincipal XimPrincipal = new GenericPrincipal(new GenericIdentity("Xim"), null);
 
-        internal static SecurityContext Default { get; } = new SecurityContext();
+        public static SecurityContext Default { get; } = new SecurityContext();
 
         public void Authorize(Connection connection)
         {

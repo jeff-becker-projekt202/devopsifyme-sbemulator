@@ -1,6 +1,6 @@
 ﻿using Amqp.Framing;
 using Amqp.Listener;
-using ServiceBusEmulator.Memory.Delivering;
+using ServiceBusEmulator.Memory.Entities.Delivering;
 
 namespace ServiceBusEmulator.Memory.Endpoints;
 

@@ -1,10 +1,15 @@
 ﻿using Amqp;
-using ServiceBusEmulator.Memory.Delivering;
+using ServiceBusEmulator.Memory.Entities.Delivering;
+using System.Text.RegularExpressions;
 
 namespace ServiceBusEmulator.Memory.Entities;
 
-internal sealed class TopicEntity : ITopic, IEntity, IDisposable
+internal sealed class TopicEntity :  IEntity, IDisposable
 {
+    // The name can contain only letters, numbers, periods, hyphens, underscores, tildes and slashes.
+    // The name must start and end with a letter or number.
+    // The name must be between 1 and 260 characters long.
+    private static readonly Regex RxValidName = new("^[A-Za-z0-9]$|^[A-Za-z0-9][\\w\\.\\-\\/~]{0,258}[A-Za-z0-9]$", RegexOptions.Compiled);
     private bool _disposed;
     private readonly List<TopicDelivery> _deliveries = new();
 
@@ -12,14 +17,23 @@ internal sealed class TopicEntity : ITopic, IEntity, IDisposable
 
     public IReadOnlyList<ITopicDelivery> Deliveries { get; }
 
-    public IReadOnlyDictionary<string, IQueue> Subscriptions { get; }
+    public IReadOnlyDictionary<string, IEntity> Subscriptions { get; }
 
-    internal TopicEntity(string name, IEnumerable<string> subscriptions)
+
+    public static string GuardName(string name)
     {
-        Name = name;
+        if (!RxValidName.IsMatch(name))
+        {
+            throw new ArgumentException(null, nameof(name));
+        }
+        return name;
+    }
+    internal TopicEntity(string name, IEnumerable<IEntity> subscriptions)
+    {
+        GuardName(name);
+        Name = $"/{name}";
         Subscriptions = subscriptions
-            .Select(subscription => (IQueue)new QueueEntity(subscription))
-            .ToDictionary(subscription => subscription.Name, StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(subscription => $"/{Name}/Subscriptions/{subscription.Name}", StringComparer.OrdinalIgnoreCase)
             .AsReadOnly();
         Deliveries = _deliveries.AsReadOnly();
     }
@@ -55,7 +69,7 @@ internal sealed class TopicEntity : ITopic, IEntity, IDisposable
 
         _disposed = true;
 
-        foreach (IQueue subscription in Subscriptions.Values)
+        foreach (var subscription in Subscriptions.Values)
         {
             ((QueueEntity)subscription).Dispose();
         }
@@ -70,7 +84,7 @@ internal sealed class TopicEntity : ITopic, IEntity, IDisposable
     {
         return Subscriptions
                     .Values
-                    .Select(subscription => subscription.Post(message.Clone()))
+                    .Select(subscription => ((QueueEntity)subscription).Post(message.Clone()))
                     .ToArray();
     }
 

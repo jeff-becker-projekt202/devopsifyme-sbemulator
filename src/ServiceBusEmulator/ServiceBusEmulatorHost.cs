@@ -1,5 +1,4 @@
 ﻿using Amqp;
-using Amqp.Framing;
 using Amqp.Listener;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -7,7 +6,6 @@ using ServiceBusEmulator.Abstractions.Options;
 using ServiceBusEmulator.Abstractions.Security;
 using ServiceBusEmulator.Azure;
 using ServiceBusEmulator.Security;
-using System;
 using System.Net.Security;
 using System.Threading.Tasks;
 

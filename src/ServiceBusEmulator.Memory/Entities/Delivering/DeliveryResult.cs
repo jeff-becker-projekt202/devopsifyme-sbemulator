@@ -1,4 +1,4 @@
-﻿namespace ServiceBusEmulator.Memory.Delivering;
+﻿namespace ServiceBusEmulator.Memory.Entities.Delivering;
 
 /// <summary>
 /// Represents a delivery result of a posted message.

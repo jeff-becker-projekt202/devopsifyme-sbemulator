@@ -1,7 +1,4 @@
-﻿using ServiceBusEmulator.Abstractions.Security;
-using System.Security.Cryptography.X509Certificates;
-
-namespace ServiceBusEmulator.Abstractions.Options
+﻿namespace ServiceBusEmulator.Abstractions.Options
 {
     /// <summary>
     /// Service bus simulator settings.

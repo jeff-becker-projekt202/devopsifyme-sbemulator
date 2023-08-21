@@ -2,7 +2,7 @@
 using Amqp.Listener;
 using System.Collections.Concurrent;
 
-namespace ServiceBusEmulator.Memory.Delivering;
+namespace ServiceBusEmulator.Memory.Entities.Delivering;
 
 public sealed class DeliveryQueue : IDeliveryQueue, IDisposable
 {

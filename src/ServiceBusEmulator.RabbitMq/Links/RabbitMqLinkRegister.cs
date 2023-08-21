@@ -1,5 +1,4 @@
-﻿using Amqp;
-using Amqp.Listener;
+﻿using Amqp.Listener;
 using System.Collections.Concurrent;
 
 namespace ServiceBusEmulator.RabbitMq.Links

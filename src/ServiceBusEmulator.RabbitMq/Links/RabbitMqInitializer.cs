@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
-using ServiceBusEmulator.Abstractions.Options;
 
 namespace ServiceBusEmulator.RabbitMq.Links
 {

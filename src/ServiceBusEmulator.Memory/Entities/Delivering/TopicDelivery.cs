@@ -1,6 +1,6 @@
 ﻿using Amqp;
 
-namespace ServiceBusEmulator.Memory.Delivering;
+namespace ServiceBusEmulator.Memory.Entities.Delivering;
 
 internal sealed class TopicDelivery : ITopicDelivery, IDisposable
 {
