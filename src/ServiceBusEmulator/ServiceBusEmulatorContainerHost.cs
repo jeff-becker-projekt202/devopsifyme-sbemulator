@@ -1,7 +1,6 @@
 ﻿using Amqp;
 using Amqp.Framing;
 using Amqp.Listener;
-using ServiceBusEmulator.Abstractions.Domain;
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 

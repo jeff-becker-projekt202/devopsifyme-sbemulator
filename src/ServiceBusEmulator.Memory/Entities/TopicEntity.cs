@@ -1,10 +1,7 @@
 ﻿using Amqp;
-using ServiceBusEmulator.InMemory.Delivering;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using ServiceBusEmulator.Memory.Delivering;
 
-namespace ServiceBusEmulator.InMemory.Entities
+namespace ServiceBusEmulator.Memory.Entities
 {
     internal sealed class TopicEntity : ITopic, IEntity, IDisposable
     {

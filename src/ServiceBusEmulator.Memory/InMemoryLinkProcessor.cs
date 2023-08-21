@@ -3,11 +3,11 @@ using Amqp.Framing;
 using Amqp.Listener;
 using Microsoft.Extensions.Logging;
 using ServiceBusEmulator.Abstractions.Security;
-using ServiceBusEmulator.InMemory.Delivering;
-using ServiceBusEmulator.InMemory.Endpoints;
-using ServiceBusEmulator.InMemory.Entities;
+using ServiceBusEmulator.Memory.Delivering;
+using ServiceBusEmulator.Memory.Endpoints;
+using ServiceBusEmulator.Memory.Entities;
 
-namespace ServiceBusEmulator.InMemory
+namespace ServiceBusEmulator.Memory
 {
     internal class InMemoryLinkProcessor : ILinkProcessor
     {

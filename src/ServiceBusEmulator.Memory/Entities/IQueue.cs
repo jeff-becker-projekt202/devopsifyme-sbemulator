@@ -1,7 +1,6 @@
-﻿using ServiceBusEmulator.InMemory.Delivering;
-using System.Collections.Generic;
+﻿using ServiceBusEmulator.Memory.Delivering;
 
-namespace ServiceBusEmulator.InMemory.Entities
+namespace ServiceBusEmulator.Memory.Entities
 {
     /// <summary>
     /// Represents a service bus queue.

@@ -1,11 +1,8 @@
 ﻿using Microsoft.Extensions.Options;
 using ServiceBusEmulator.Abstractions.Options;
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 
-namespace ServiceBusEmulator.InMemory.Entities
+namespace ServiceBusEmulator.Memory.Entities
 {
     internal class EntityLookup : IEntityLookup
     {

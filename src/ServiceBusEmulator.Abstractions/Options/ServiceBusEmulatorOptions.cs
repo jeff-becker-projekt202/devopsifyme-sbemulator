@@ -1,5 +1,4 @@
-﻿using ServiceBusEmulator.Abstractions.Domain;
-using System.Security.Cryptography.X509Certificates;
+﻿using System.Security.Cryptography.X509Certificates;
 
 namespace ServiceBusEmulator.Abstractions.Options
 {
@@ -28,24 +27,17 @@ namespace ServiceBusEmulator.Abstractions.Options
         /// </summary>
         public string? ServerCertificatePassword { get; set; }
 
+        public string HostName { get; set; } = "localhost";
         /// <summary>
         /// Gets the preferred service bus port.
         /// </summary>
         public int Port { get; set; } = 5671;
 
-        /// <summary>
-        /// Semicolon separate list of queues or topics to be created upon startup
-        /// </summary>
-        public string? QueuesAndTopics { get; set; }
+        ///// <summary>
+        ///// Semicolon separate list of queues or topics to be created upon startup
+        ///// </summary>
+        //public string? QueuesAndTopics { get; set; }
 
-        /// <summary>
-        /// Gets the list of registered topics with subscriptions.
-        /// </summary>
-        public IList<Topic> Topics { get; } = new List<Topic>();
 
-        /// <summary>
-        /// Gets the list of registered queues.
-        /// </summary>
-        public IList<Queue> Queues { get; } = new List<Queue>();
     }
 }

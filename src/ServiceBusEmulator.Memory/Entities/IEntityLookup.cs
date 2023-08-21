@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace ServiceBusEmulator.InMemory.Entities
+﻿namespace ServiceBusEmulator.Memory.Entities
 {
     public interface IEntityLookup : IEnumerable<(string Address, IEntity Entity)>
     {

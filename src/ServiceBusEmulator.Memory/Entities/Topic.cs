@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace ServiceBusEmulator.Abstractions.Domain
+namespace ServiceBusEmulator.Memory.Domain
 {
     /// <summary>
     /// Describes a service bus topic.

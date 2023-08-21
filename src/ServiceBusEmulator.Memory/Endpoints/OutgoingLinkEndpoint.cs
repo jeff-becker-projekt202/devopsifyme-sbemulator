@@ -1,11 +1,8 @@
 ﻿using Amqp.Framing;
 using Amqp.Listener;
-using ServiceBusEmulator.InMemory.Delivering;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
+using ServiceBusEmulator.Memory.Delivering;
 
-namespace ServiceBusEmulator.InMemory.Endpoints
+namespace ServiceBusEmulator.Memory.Endpoints
 {
     internal sealed class OutgoingLinkEndpoint : LinkEndpoint
     {

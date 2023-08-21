@@ -3,8 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ServiceBusEmulator.Abstractions.Options;
 using ServiceBusEmulator.Abstractions.Security;
-using ServiceBusEmulator.InMemory;
-using ServiceBusEmulator.InMemory.Entities;
 using ServiceBusEmulator.Security;
 using System;
 using System.Linq;
@@ -18,8 +16,6 @@ namespace ServiceBusEmulator
         {
             configure ??= (o) => { };
 
-            _ = services.AddSingleton<ILinkProcessor, InMemoryLinkProcessor>();
-            _ = services.AddSingleton<IEntityLookup, EntityLookup>();
 
             _ = services.AddTransient<ISecurityContext>(sp => SecurityContext.Default);
 
