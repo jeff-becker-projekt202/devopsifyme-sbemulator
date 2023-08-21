@@ -2,36 +2,35 @@
 using Amqp.Listener;
 using ServiceBusEmulator.Memory.Entities;
 
-namespace ServiceBusEmulator.Memory.Endpoints
+namespace ServiceBusEmulator.Memory.Endpoints;
+
+
+
+internal sealed class IncomingLinkEndpoint : LinkEndpoint
 {
+    private readonly IEntity _entity;
 
-
-    internal sealed class IncomingLinkEndpoint : LinkEndpoint
+    internal IncomingLinkEndpoint(IEntity entity)
     {
-        private readonly IEntity _entity;
+        _entity = entity;
+    }
 
-        internal IncomingLinkEndpoint(IEntity entity)
-        {
-            _entity = entity;
-        }
+    public override void OnLinkClosed(ListenerLink link, Error error)
+    {
+        base.OnLinkClosed(link, error);
+    }
 
-        public override void OnLinkClosed(ListenerLink link, Error error)
-        {
-            base.OnLinkClosed(link, error);
-        }
+    public override void OnMessage(MessageContext messageContext)
+    {
+        _entity.Post(messageContext.Message.Clone());
+        messageContext.Complete();
+    }
 
-        public override void OnMessage(MessageContext messageContext)
-        {
-            _entity.Post(messageContext.Message.Clone());
-            messageContext.Complete();
-        }
+    public override void OnFlow(FlowContext flowContext)
+    {
+    }
 
-        public override void OnFlow(FlowContext flowContext)
-        {
-        }
-
-        public override void OnDisposition(DispositionContext dispositionContext)
-        {
-        }
+    public override void OnDisposition(DispositionContext dispositionContext)
+    {
     }
 }

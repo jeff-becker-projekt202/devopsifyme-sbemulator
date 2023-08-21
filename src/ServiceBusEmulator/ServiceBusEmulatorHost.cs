@@ -4,6 +4,7 @@ using Amqp.Listener;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using ServiceBusEmulator.Abstractions.Options;
+using ServiceBusEmulator.Abstractions.Security;
 using ServiceBusEmulator.Azure;
 using ServiceBusEmulator.Security;
 using System;
@@ -18,17 +19,22 @@ namespace ServiceBusEmulator
         private ContainerHost _containerHost;
         private readonly ILinkProcessor _linkProcessor;
         private readonly CbsRequestProcessor _cbsRequestProcessor;
+        private readonly IServerCertificateFactory _certificateFactory;
         private readonly ILogger _logger;
 
         public ServiceBusEmulatorOptions Settings { get; }
 
-        public ServiceBusEmulatorHost(ILinkProcessor linkProcessor, CbsRequestProcessor cbsRequestProcessor, IOptions<ServiceBusEmulatorOptions> options, ILogger<ServiceBusEmulatorHost> logger)
+        public ServiceBusEmulatorHost(ILinkProcessor linkProcessor, CbsRequestProcessor cbsRequestProcessor, 
+            IOptions<ServiceBusEmulatorOptions> options, 
+            IServerCertificateFactory certificateFactory, 
+            ILogger<ServiceBusEmulatorHost> logger)
         {
             ServiceBusEmulatorOptions o = options.Value;
             Settings = o;
 
             _linkProcessor = linkProcessor;
             _cbsRequestProcessor = cbsRequestProcessor;
+            _certificateFactory = certificateFactory;
             _logger = logger;
         }
 
@@ -36,10 +42,6 @@ namespace ServiceBusEmulator
         {
             try
             {
-                if (Settings.ServerCertificate == null)
-                {
-                    throw new ArgumentNullException(nameof(Settings.ServerCertificate));
-                }
                 _containerHost = BuildSecureServiceBusHost();
                 await StartContainerHostAsync(_containerHost).ConfigureAwait(false);
             }
@@ -85,9 +87,9 @@ namespace ServiceBusEmulator
 
         private ContainerHost BuildSecureServiceBusHost()
         {
-            int port = Settings.Port;
-            Address address = new($"amqps://localhost:{port}");
-            ServiceBusEmulatorContainerHost host = new(new[] { address }, Settings.ServerCertificate);
+
+            Address address = new($"amqps://{Settings.HostName}:{Settings.Port}");
+            ServiceBusEmulatorContainerHost host = new(new[] { address }, _certificateFactory.Load());
 
             host.Listeners[0].HandlerFactory = _ => AzureHandler.Instance;
             host.Listeners[0].SASL.EnableAzureSaslMechanism();

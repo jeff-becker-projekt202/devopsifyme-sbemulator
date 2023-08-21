@@ -1,14 +1,13 @@
 ﻿using Amqp;
 using Amqp.Listener;
 
-namespace ServiceBusEmulator.Memory.Delivering
+namespace ServiceBusEmulator.Memory.Delivering;
+
+internal interface IDeliveryQueue
 {
-    internal interface IDeliveryQueue
-    {
-        void Enqueue(Delivery delivery);
+    void Enqueue(Delivery delivery);
 
-        Message Dequeue(CancellationToken cancellationToken);
+    Message Dequeue(CancellationToken cancellationToken);
 
-        void Process(MessageContext messageContext);
-    }
+    void Process(MessageContext messageContext);
 }

@@ -1,13 +1,12 @@
 ﻿using ServiceBusEmulator.Memory.Delivering;
 
-namespace ServiceBusEmulator.Memory.Entities
+namespace ServiceBusEmulator.Memory.Entities;
+
+public interface IEntity
 {
-    public interface IEntity
-    {
-        string Name { get; }
+    string Name { get; }
 
-        DeliveryQueue DeliveryQueue { get; }
+    DeliveryQueue DeliveryQueue { get; }
 
-        void Post(Amqp.Message message);
-    }
+    void Post(Amqp.Message message);
 }

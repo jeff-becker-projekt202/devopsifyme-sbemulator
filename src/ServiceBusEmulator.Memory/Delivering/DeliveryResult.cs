@@ -1,38 +1,37 @@
-﻿namespace ServiceBusEmulator.Memory.Delivering
+﻿namespace ServiceBusEmulator.Memory.Delivering;
+
+/// <summary>
+/// Represents a delivery result of a posted message.
+/// </summary>
+public enum DeliveryResult
 {
     /// <summary>
-    /// Represents a delivery result of a posted message.
+    /// Message posted for processing.
     /// </summary>
-    public enum DeliveryResult
-    {
-        /// <summary>
-        /// Message posted for processing.
-        /// </summary>
-        Posted,
+    Posted,
 
-        /// <summary>
-        /// Delivery completed successfully.
-        /// </summary>
-        Completed,
+    /// <summary>
+    /// Delivery completed successfully.
+    /// </summary>
+    Completed,
 
-        /// <summary>
-        /// Delivery abandoned.
-        /// </summary>
-        Abandoned,
+    /// <summary>
+    /// Delivery abandoned.
+    /// </summary>
+    Abandoned,
 
-        /// <summary>
-        /// Delivery failed and message dead-lettered.
-        /// </summary>
-        DeadLettered,
+    /// <summary>
+    /// Delivery failed and message dead-lettered.
+    /// </summary>
+    DeadLettered,
 
-        /// <summary>
-        /// Message lost.
-        /// </summary>
-        Lost,
+    /// <summary>
+    /// Message lost.
+    /// </summary>
+    Lost,
 
-        /// <summary>
-        /// Delivery unknown.
-        /// </summary>
-        Unknown
-    }
+    /// <summary>
+    /// Delivery unknown.
+    /// </summary>
+    Unknown
 }

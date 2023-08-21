@@ -2,66 +2,65 @@
 using Amqp.Listener;
 using System.Collections.Concurrent;
 
-namespace ServiceBusEmulator.Memory.Delivering
+namespace ServiceBusEmulator.Memory.Delivering;
+
+public sealed class DeliveryQueue : IDeliveryQueue, IDisposable
 {
-    public sealed class DeliveryQueue : IDeliveryQueue, IDisposable
+    private bool _disposed;
+    private long _sequence;
+
+    private readonly BlockingCollection<Delivery> _queue
+        = new(new ConcurrentQueue<Delivery>());
+
+    private readonly ConcurrentDictionary<Message, Delivery> _delivery
+        = new();
+
+    public void Enqueue(Delivery delivery)
     {
-        private bool _disposed;
-        private long _sequence;
-
-        private readonly BlockingCollection<Delivery> _queue
-            = new(new ConcurrentQueue<Delivery>());
-
-        private readonly ConcurrentDictionary<Message, Delivery> _delivery
-            = new();
-
-        public void Enqueue(Delivery delivery)
+        if (_disposed)
         {
-            if (_disposed)
-            {
-                throw new ObjectDisposedException(typeof(DeliveryQueue).Name);
-            }
-
-            _ = delivery.Message.AddSequenceNumber(Interlocked.Increment(ref _sequence));
-            _queue.Add(delivery);
+            throw new ObjectDisposedException(typeof(DeliveryQueue).Name);
         }
 
-        public Message Dequeue(CancellationToken cancellationToken)
+        _ = delivery.Message.AddSequenceNumber(Interlocked.Increment(ref _sequence));
+        _queue.Add(delivery);
+    }
+
+    public Message Dequeue(CancellationToken cancellationToken)
+    {
+        if (_disposed)
         {
-            if (_disposed)
-            {
-                throw new ObjectDisposedException(typeof(DeliveryQueue).Name);
-            }
-
-            Delivery delivery = _queue.Take(cancellationToken);
-
-            _delivery[delivery.Message] = delivery;
-
-            return delivery.Message;
+            throw new ObjectDisposedException(typeof(DeliveryQueue).Name);
         }
 
-        public void Process(MessageContext messageContext)
-        {
-            if (_disposed)
-            {
-                throw new ObjectDisposedException(typeof(DeliveryQueue).Name);
-            }
+        Delivery delivery = _queue.Take(cancellationToken);
 
-            if (_delivery.TryRemove(messageContext.Message, out Delivery delivery))
-            {
-                delivery.Process(messageContext.DeliveryState);
-            }
+        _delivery[delivery.Message] = delivery;
+
+        return delivery.Message;
+    }
+
+    public void Process(MessageContext messageContext)
+    {
+        if (_disposed)
+        {
+            throw new ObjectDisposedException(typeof(DeliveryQueue).Name);
         }
 
-        public void Dispose()
+        if (_delivery.TryRemove(messageContext.Message, out Delivery delivery))
         {
-            if (_disposed)
-            {
-                return;
-            }
-
-            _disposed = true;
-            _queue.Dispose();
+            delivery.Process(messageContext.DeliveryState);
         }
+    }
+
+    public void Dispose()
+    {
+        if (_disposed)
+        {
+            return;
+        }
+
+        _disposed = true;
+        _queue.Dispose();
     }
 }

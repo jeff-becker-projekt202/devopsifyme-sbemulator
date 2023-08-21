@@ -1,49 +1,48 @@
 ﻿using Amqp;
 
-namespace ServiceBusEmulator.Memory.Delivering
+namespace ServiceBusEmulator.Memory.Delivering;
+
+internal sealed class TopicDelivery : ITopicDelivery, IDisposable
 {
-    internal sealed class TopicDelivery : ITopicDelivery, IDisposable
+    private bool _disposed;
+
+    public DateTime Posted { get; }
+
+    public Message Message { get; }
+
+    public IReadOnlyList<IDelivery> Subscriptions { get; }
+
+    internal TopicDelivery(Message message, IReadOnlyList<IDelivery> subscriptions)
     {
-        private bool _disposed;
+        Posted = DateTime.UtcNow;
+        Message = message;
+        Subscriptions = subscriptions;
+    }
 
-        public DateTime Posted { get; }
-
-        public Message Message { get; }
-
-        public IReadOnlyList<IDelivery> Subscriptions { get; }
-
-        internal TopicDelivery(Message message, IReadOnlyList<IDelivery> subscriptions)
+    public async Task<bool> WaitAsync(TimeSpan timeout, CancellationToken cancellationToken = default)
+    {
+        if (_disposed)
         {
-            Posted = DateTime.UtcNow;
-            Message = message;
-            Subscriptions = subscriptions;
+            throw new ObjectDisposedException(typeof(TopicDelivery).Name);
         }
 
-        public async Task<bool> WaitAsync(TimeSpan timeout, CancellationToken cancellationToken = default)
-        {
-            if (_disposed)
-            {
-                throw new ObjectDisposedException(typeof(TopicDelivery).Name);
-            }
+        IEnumerable<Task<bool>> subscriptionTasks = Subscriptions
+            .Select(s => s.WaitAsync(timeout, cancellationToken));
+        bool[] results = await Task.WhenAll(subscriptionTasks).ConfigureAwait(false);
+        return results.All(r => r);
+    }
 
-            IEnumerable<Task<bool>> subscriptionTasks = Subscriptions
-                .Select(s => s.WaitAsync(timeout, cancellationToken));
-            bool[] results = await Task.WhenAll(subscriptionTasks).ConfigureAwait(false);
-            return results.All(r => r);
+    public void Dispose()
+    {
+        if (_disposed)
+        {
+            return;
         }
 
-        public void Dispose()
+        _disposed = true;
+        foreach (IDelivery subscription in Subscriptions)
         {
-            if (_disposed)
-            {
-                return;
-            }
-
-            _disposed = true;
-            foreach (IDelivery subscription in Subscriptions)
-            {
-                (subscription as IDisposable)?.Dispose();
-            }
+            (subscription as IDisposable)?.Dispose();
         }
     }
 }
