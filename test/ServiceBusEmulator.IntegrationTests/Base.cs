@@ -12,9 +12,11 @@ namespace ServiceBusEmulator.IntegrationTests
             var clientOptions = new ServiceBusClientOptions
             {
                 TransportType = ServiceBusTransportType.AmqpTcp
+
             };
 
             Client = new ServiceBusClient(ConnectionString, clientOptions);
+    
 
             Fixture = new Fixture();
         }

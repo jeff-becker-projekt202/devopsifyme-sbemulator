@@ -11,18 +11,18 @@ namespace ServiceBusEmulator
 {
     public static class Extensions
     {
-        public static IServiceCollection AddServiceBusEmulator(this IServiceCollection services, Action<ServiceBusEmulatorOptions> configure = null)
+        public static IWebAppBuilder AddServiceBusEmulator(this IWebAppBuilder builder, Action<ServiceBusEmulatorOptions> configure = null)
         {
             configure ??= (o) => { };
-            _ = services.AddTransient<ISecurityContext>(sp => SecurityContext.Default);
-            _ = services.AddTransient<CbsRequestProcessor>();
-            _ = services.AddTransient<ITokenValidator>(sp => CbsTokenValidator.Default);
-            _ = services.AddOptions<ServiceBusEmulatorOptions>().Configure(configure).BindConfiguration("Emulator");
-            _ = services.AddTransient<ServiceBusEmulatorHost>();
-            _ = services.AddSingleton<IHostedService, ServiceBusEmulatorWorker>();
-            _ = services.AddSingleton(ctx => CertificateFactory.FromConfig(ctx.GetRequiredService<IConfiguration>()));
+            _ = builder.Services.AddTransient<ISecurityContext>(sp => SecurityContext.Default);
+            _ = builder.Services.AddTransient<CbsRequestProcessor>();
+            _ = builder.Services.AddTransient<ITokenValidator>(sp => CbsTokenValidator.Default);
+            _ = builder.Services.AddOptions<ServiceBusEmulatorOptions>().Configure(configure).BindConfiguration("Emulator");
+            _ = builder.Services.AddTransient<ServiceBusEmulatorHost>();
+            _ = builder.Services.AddSingleton<IHostedService, ServiceBusEmulatorWorker>();
+            _ = builder.Services.AddSingleton(ctx => CertificateFactory.FromConfig(ctx.GetRequiredService<IConfiguration>()));
 
-            return services;
+            return builder;
         }
     }
 }

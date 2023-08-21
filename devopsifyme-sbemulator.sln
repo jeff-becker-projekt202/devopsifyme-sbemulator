@@ -25,7 +25,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D74CA77C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceBusEmulator.IntegrationTests", "test\ServiceBusEmulator.IntegrationTests\ServiceBusEmulator.IntegrationTests.csproj", "{A5BCE744-966D-44A1-9B08-359572A46094}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceBusEmulator.Memory", "src\ServiceBusEmulator.Memory\ServiceBusEmulator.Memory.csproj", "{F53FD010-83B8-4C22-A357-CAC0CB7CC409}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceBusEmulator.Memory", "src\ServiceBusEmulator.Memory\ServiceBusEmulator.Memory.csproj", "{F53FD010-83B8-4C22-A357-CAC0CB7CC409}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceBusEmulator.AzureStorage", "src\ServiceBusEmulator.AzureStorage\ServiceBusEmulator.AzureStorage.csproj", "{99677059-7619-46B7-901E-F1852BEBA604}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -88,6 +90,12 @@ Global
 		{F53FD010-83B8-4C22-A357-CAC0CB7CC409}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F53FD010-83B8-4C22-A357-CAC0CB7CC409}.Signed|Any CPU.ActiveCfg = Debug|Any CPU
 		{F53FD010-83B8-4C22-A357-CAC0CB7CC409}.Signed|Any CPU.Build.0 = Debug|Any CPU
+		{99677059-7619-46B7-901E-F1852BEBA604}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99677059-7619-46B7-901E-F1852BEBA604}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99677059-7619-46B7-901E-F1852BEBA604}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99677059-7619-46B7-901E-F1852BEBA604}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99677059-7619-46B7-901E-F1852BEBA604}.Signed|Any CPU.ActiveCfg = Debug|Any CPU
+		{99677059-7619-46B7-901E-F1852BEBA604}.Signed|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -101,6 +109,7 @@ Global
 		{EA3D210B-D9A9-4A42-B6EB-8F5CE728892B} = {D74CA77C-30B1-4F81-B454-5FEBD3362D85}
 		{A5BCE744-966D-44A1-9B08-359572A46094} = {D74CA77C-30B1-4F81-B454-5FEBD3362D85}
 		{F53FD010-83B8-4C22-A357-CAC0CB7CC409} = {2A73BEBD-BB09-47E5-9F37-AEACF93F3185}
+		{99677059-7619-46B7-901E-F1852BEBA604} = {2A73BEBD-BB09-47E5-9F37-AEACF93F3185}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7DF07FB9-7A6A-4EB0-87D7-3ACAD5C3A0C3}

@@ -1,4 +1,5 @@
 ﻿using Amqp.Listener;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using ServiceBusEmulator.Abstractions.Options;
@@ -11,14 +12,14 @@ namespace ServiceBusEmulator;
 
 public static class Extensions
 {
-    public static IServiceCollection AddServiceBusEmulator(this IServiceCollection services, Action<ServiceBusEmulatorOptions> configure = null)
+    public static IServiceCollection AddServiceBusEmulator(this IServiceCollection services)
     {
-        configure ??= (o) => { };
+ 
 
         _ = services.AddSingleton<ILinkProcessor, InMemoryLinkProcessor>();
         _ = services.AddSingleton<IEntityLookup, EntityLookup>();
         _ = services.AddSingleton<IHealthCheck, InMemoryHealthCheck>();
-
+        _ = services.AddOptions<ServiceBusEmulatorOptions>().BindConfiguration("Emulator:Memory");
 
 
         return services;
