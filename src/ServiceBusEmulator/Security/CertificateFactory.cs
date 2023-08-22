@@ -11,9 +11,18 @@ public abstract class CertificateFactory : IServerCertificateFactory
     private readonly Lazy<X509Certificate2> _serverCert;
     protected CertificateFactory()
     {
-        _serverCert = new Lazy<X509Certificate2>(() => LoadCertificate());
+        _serverCert = new Lazy<X509Certificate2>(() => LoadCertificateEnsurePrivateKey());
     }
 
+    private X509Certificate2 LoadCertificateEnsurePrivateKey()
+    {
+        var cert = LoadCertificate();
+        if (!cert.HasPrivateKey)
+        {
+            throw new InvalidOperationException($"The certificate {cert.Thumbprint} is missing a private key which is required for the server to work.");
+        }
+        return cert;
+    }
     protected abstract X509Certificate2 LoadCertificate();
 
     public X509Certificate2 Load() => _serverCert.Value;

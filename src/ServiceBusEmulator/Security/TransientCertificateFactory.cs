@@ -64,22 +64,22 @@ public class TransientCertificateFactory : CertificateFactory
             certificate.FriendlyName = "ServiceBusEmulator Certificate";
         }
 
-        // Note: CertificateRequest.CreateSelfSigned() doesn't mark the key set associated with the certificate
-        // as "persisted", which eventually prevents X509Store.Add() from correctly storing the private key.
-        // To work around this issue, the certificate payload is manually exported and imported back
-        // into a new X509Certificate2 instance specifying the X509KeyStorageFlags.PersistKeySet flag.
-        var data = certificate.Export(X509ContentType.Pfx, string.Empty);
+        //// Note: CertificateRequest.CreateSelfSigned() doesn't mark the key set associated with the certificate
+        //// as "persisted", which eventually prevents X509Store.Add() from correctly storing the private key.
+        //// To work around this issue, the certificate payload is manually exported and imported back
+        //// into a new X509Certificate2 instance specifying the X509KeyStorageFlags.PersistKeySet flag.
+        //var data = certificate.Export(X509ContentType.Pfx, string.Empty);
 
-        try
-        {
-            var flags = X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.Exportable;
-            certificate = new X509Certificate2(data, string.Empty, flags);
-        }
+        //try
+        //{
+        //    var flags = X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.Exportable;
+        //    certificate = new X509Certificate2(data, string.Empty, flags);
+        //}
 
-        finally
-        {
-            Array.Clear(data, 0, data.Length);
-        }
+        //finally
+        //{
+        //    Array.Clear(data, 0, data.Length);
+        //}
         return certificate;
     }
 
