@@ -36,7 +36,7 @@ public abstract class CertificateFactory : IServerCertificateFactory
         {
             return new LocalStoreCertificateFactory(thumbprint);
         }
-        else if (!string.IsNullOrEmpty(path) && !string.IsNullOrEmpty(password))
+        else if (!string.IsNullOrEmpty(path) && password != null /*having an empty string as the password is a valid case*/)
         {
             return new FileCertificateFactory(path, password);
         }

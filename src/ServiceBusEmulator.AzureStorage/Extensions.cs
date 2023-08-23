@@ -1,26 +1,23 @@
-﻿using Amqp.Listener;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
+﻿using Microsoft.Extensions.DependencyInjection;
 using ServiceBusEmulator.Abstractions.Options;
-using ServiceBusEmulator.Memory;
-using ServiceBusEmulator.Memory.Entities;
 using Amqp.Types;
 using Amqp;
+using ServiceBusEmulator.AzureStorage;
+using Amqp.Listener;
+using Microsoft.Extensions.Hosting;
 
 namespace ServiceBusEmulator;
 
 public static class Extensions
 {
-    public static IWebAppBuilder AddServiceBusEmulatorMemoryBackend(this IWebAppBuilder builder)
+    public static IWebAppBuilder AddServiceBusEmulatorAzureStorageBackend(this IWebAppBuilder builder)
     {
- 
 
-        _ = builder.Services.AddSingleton<ILinkProcessor, InMemoryLinkProcessor>();
-        _ = builder.Services.AddSingleton<IEntityLookup, EntityLookup>();
-        _ = builder.Services.AddSingleton<IHealthCheck, InMemoryHealthCheck>();
-        _ = builder.Services.AddOptions<MemoryBackendOptions>().BindConfiguration("Emulator:Memory");
-        _ = builder.Services.AddHealthChecks().AddCheck<InMemoryHealthCheck>("in-memory");
+
+        _ = builder.Services.AddSingleton<ILinkProcessor, AzureStorageLinkProcessor>();
+        _ = builder.Services.AddSingleton<IHostedService, AzureStorageMessagePump>();
+        _ = builder.Services.AddOptions<AzureStorageBackendOptions>().BindConfiguration("Emulator:AzureStorage");
+        _ = builder.Services.AddHealthChecks().AddCheck<AzureStorageHealthCheck>("azure-storage");
 
         return builder;
     }

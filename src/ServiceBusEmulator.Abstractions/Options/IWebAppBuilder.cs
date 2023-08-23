@@ -12,6 +12,6 @@ public interface IWebAppBuilder
     /// </summary>
     IHostEnvironment Environment { get; }
     IServiceCollection Services { get; }
-    IConfigurationBuilder Configuration { get; }
+    IConfigurationBuilder ConfigurationBuilder { get; }
     ILoggingBuilder Logging { get; }
 }

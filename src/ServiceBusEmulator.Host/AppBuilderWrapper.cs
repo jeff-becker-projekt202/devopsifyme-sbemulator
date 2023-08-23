@@ -15,7 +15,8 @@ public class AppBuilderWrapper : IWebAppBuilder
 
     public IServiceCollection Services => _builder.Services;
 
-    public IConfigurationBuilder Configuration => _builder.Configuration;
+    public IConfigurationBuilder ConfigurationBuilder => _builder.Configuration;
+    public IConfiguration Configuration =>_builder.Configuration;
 
     public ILoggingBuilder Logging => _builder.Logging;
 

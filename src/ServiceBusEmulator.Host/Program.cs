@@ -10,7 +10,16 @@ Trace.TraceListener = (l, f, a) => Console.WriteLine(DateTime.Now.ToString("[hh:
 
 var builder = new AppBuilderWrapper(WebApplication.CreateBuilder(args));
 builder.AddServiceBusEmulator();
-//builder.AddServiceBusEmulatorRabbitMqBackend();
+switch (builder.Configuration.GetSection("Emulator:Backend").Value?.ToLowerInvariant())
+{
+    case "rabbitmq":
+        builder.AddServiceBusEmulatorRabbitMqBackend();
+        break;
+    case "azurestorage":
+        builder.AddAzureStorage();
+        break;
+}
+//
 builder.AddServiceBusEmulatorMemoryBackend();
 
 

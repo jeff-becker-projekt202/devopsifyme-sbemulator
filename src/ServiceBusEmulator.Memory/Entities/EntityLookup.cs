@@ -25,10 +25,10 @@ internal class EntityLookup : IEntityLookup
         public IEntity Entity { get; set; }
     }
 
-    public EntityLookup(ILogger<EntityLookup> logger, IOptions<MemoryTransportOptions> options)
+    public EntityLookup(ILogger<EntityLookup> logger, IOptions<MemoryBackendOptions> options)
     {
         _logger = logger;
-        MemoryTransportOptions o = options.Value;
+        MemoryBackendOptions o = options.Value;
         var topicsWithSubscriptions = o.Subscriptions
             // force everything into the form 'topic/subscription'
             .Select(s => s.Trim('/').Replace("/Subscriptions/", "/", StringComparison.OrdinalIgnoreCase))
