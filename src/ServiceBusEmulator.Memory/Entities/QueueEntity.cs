@@ -26,7 +26,7 @@ internal sealed class QueueEntity : IEntity, IDisposable
 
     public string Name { get; }
 
-    public IReadOnlyList<IDelivery> Deliveries { get; }
+    public IReadOnlyList<Delivery> Deliveries { get; }
 
     internal QueueEntity(string name)
     {
@@ -35,7 +35,7 @@ internal sealed class QueueEntity : IEntity, IDisposable
         Deliveries = _deliveries.AsReadOnly();
     }
 
-    public IDelivery Post(Message message)
+    public Delivery Post(Message message)
     {
         if (_disposed)
         {
@@ -79,6 +79,6 @@ internal sealed class QueueEntity : IEntity, IDisposable
     {
         _ = Post(message);
     }
+    public DeliveryQueue DeliveryQueue => _deliveryQueue;
 
-    DeliveryQueue IEntity.DeliveryQueue => _deliveryQueue;
 }

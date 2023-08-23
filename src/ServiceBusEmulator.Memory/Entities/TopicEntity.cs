@@ -15,7 +15,7 @@ internal sealed class TopicEntity :  IEntity, IDisposable
 
     public string Name { get; }
 
-    public IReadOnlyList<ITopicDelivery> Deliveries { get; }
+    public IReadOnlyList<TopicDelivery> Deliveries { get; }
 
     public IReadOnlyDictionary<string, IEntity> Subscriptions { get; }
 
@@ -38,7 +38,7 @@ internal sealed class TopicEntity :  IEntity, IDisposable
         Deliveries = _deliveries.AsReadOnly();
     }
 
-    public ITopicDelivery Post(Message message)
+    public TopicDelivery Post(Message message)
     {
         if (_disposed)
         {
@@ -80,7 +80,7 @@ internal sealed class TopicEntity :  IEntity, IDisposable
         }
     }
 
-    private IReadOnlyList<IDelivery> PostToSubscriptions(Message message)
+    private IReadOnlyList<Delivery> PostToSubscriptions(Message message)
     {
         return Subscriptions
                     .Values
@@ -93,5 +93,5 @@ internal sealed class TopicEntity :  IEntity, IDisposable
         _ = Post(message);
     }
 
-    DeliveryQueue IEntity.DeliveryQueue => null;
+    public DeliveryQueue DeliveryQueue => throw new NotImplementedException("Topics dont directly support delivery access");
 }

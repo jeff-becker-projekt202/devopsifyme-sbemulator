@@ -12,17 +12,17 @@ namespace ServiceBusEmulator;
 
 public static class Extensions
 {
-    public static IServiceCollection AddServiceBusEmulator(this IServiceCollection services)
+    public static IWebAppBuilder AddServiceBusEmulatorMemoryBackend(this IWebAppBuilder builder)
     {
  
 
-        _ = services.AddSingleton<ILinkProcessor, InMemoryLinkProcessor>();
-        _ = services.AddSingleton<IEntityLookup, EntityLookup>();
-        _ = services.AddSingleton<IHealthCheck, InMemoryHealthCheck>();
-        _ = services.AddOptions<ServiceBusEmulatorOptions>().BindConfiguration("Emulator:Memory");
+        _ = builder.Services.AddSingleton<ILinkProcessor, InMemoryLinkProcessor>();
+        _ = builder.Services.AddSingleton<IEntityLookup, EntityLookup>();
+        _ = builder.Services.AddSingleton<IHealthCheck, InMemoryHealthCheck>();
+        _ = builder.Services.AddOptions<ServiceBusEmulatorOptions>().BindConfiguration("Emulator:Memory");
+        _ = builder.Services.AddHealthChecks().AddCheck<InMemoryHealthCheck>("in-memory");
 
-
-        return services;
+        return builder;
     }
     private static readonly Symbol XOptSequenceNumber = "x-opt-sequence-number";
 

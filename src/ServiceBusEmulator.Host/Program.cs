@@ -1,5 +1,6 @@
 using Amqp;
 using ServiceBusEmulator;
+using ServiceBusEmulator.Abstractions.Security;
 using ServiceBusEmulator.Host;
 using ServiceBusEmulator.RabbitMq;
 
@@ -9,10 +10,12 @@ Trace.TraceListener = (l, f, a) => Console.WriteLine(DateTime.Now.ToString("[hh:
 
 var builder = new AppBuilderWrapper(WebApplication.CreateBuilder(args));
 builder.AddServiceBusEmulator();
-builder.AddServiceBusEmulatorRabbitMqBackend();
+//builder.AddServiceBusEmulatorRabbitMqBackend();
+builder.AddServiceBusEmulatorMemoryBackend();
 
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 app.UseHealthChecks("/health");
 app.UseRouting();
+
 app.Run();

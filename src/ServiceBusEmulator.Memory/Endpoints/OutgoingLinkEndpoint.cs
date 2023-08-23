@@ -6,10 +6,10 @@ namespace ServiceBusEmulator.Memory.Endpoints;
 
 internal sealed class OutgoingLinkEndpoint : LinkEndpoint
 {
-    private readonly IDeliveryQueue _deliveryQueue;
+    private readonly DeliveryQueue _deliveryQueue;
     private CancellationTokenSource _flowTask;
 
-    public OutgoingLinkEndpoint(IDeliveryQueue deliveryQueue)
+    public OutgoingLinkEndpoint(DeliveryQueue deliveryQueue)
     {
         _deliveryQueue = deliveryQueue;
     }

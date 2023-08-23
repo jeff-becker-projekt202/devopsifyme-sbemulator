@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System.Collections;
 
 namespace ServiceBusEmulator.Memory.Entities;
@@ -6,6 +7,8 @@ namespace ServiceBusEmulator.Memory.Entities;
 internal class EntityLookup : IEntityLookup
 {
     private readonly Dictionary<string, IEntity> _entities;
+    private readonly ILogger<EntityLookup> _logger;
+
     private class NamedEntity
     {
         public NamedEntity() { }
@@ -22,8 +25,9 @@ internal class EntityLookup : IEntityLookup
         public IEntity Entity { get; set; }
     }
 
-    public EntityLookup(IOptions<MemoryTransportOptions> options)
+    public EntityLookup(ILogger<EntityLookup> logger, IOptions<MemoryTransportOptions> options)
     {
+        _logger = logger;
         MemoryTransportOptions o = options.Value;
         var topicsWithSubscriptions = o.Subscriptions
             // force everything into the form 'topic/subscription'
@@ -56,6 +60,10 @@ internal class EntityLookup : IEntityLookup
                 item => item.Entity,
                 StringComparer.OrdinalIgnoreCase
             );
+        var keys = string.Join("\n",_entities.Keys.OrderBy(x=>x, StringComparer.OrdinalIgnoreCase).Select(x=>"     - "+x));
+        logger.LogInformation($"In Memory Bus initialized with:\n{keys}");
+
+
 
         //MemoryTransportOptions o = options.Value;
 

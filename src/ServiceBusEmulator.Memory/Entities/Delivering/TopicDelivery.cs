@@ -2,7 +2,7 @@
 
 namespace ServiceBusEmulator.Memory.Entities.Delivering;
 
-internal sealed class TopicDelivery : ITopicDelivery, IDisposable
+internal sealed class TopicDelivery : IDisposable
 {
     private bool _disposed;
 
@@ -10,9 +10,9 @@ internal sealed class TopicDelivery : ITopicDelivery, IDisposable
 
     public Message Message { get; }
 
-    public IReadOnlyList<IDelivery> Subscriptions { get; }
+    public IReadOnlyList<Delivery> Subscriptions { get; }
 
-    internal TopicDelivery(Message message, IReadOnlyList<IDelivery> subscriptions)
+    internal TopicDelivery(Message message, IReadOnlyList<Delivery> subscriptions)
     {
         Posted = DateTime.UtcNow;
         Message = message;
@@ -40,7 +40,7 @@ internal sealed class TopicDelivery : ITopicDelivery, IDisposable
         }
 
         _disposed = true;
-        foreach (IDelivery subscription in Subscriptions)
+        foreach (Delivery subscription in Subscriptions)
         {
             (subscription as IDisposable)?.Dispose();
         }

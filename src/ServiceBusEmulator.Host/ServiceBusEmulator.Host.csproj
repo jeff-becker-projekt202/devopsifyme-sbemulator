@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ServiceBusEmulator.Memory\ServiceBusEmulator.Memory.csproj" />
     <ProjectReference Include="..\ServiceBusEmulator.RabbitMq\ServiceBusEmulator.RabbitMq.csproj" />
     <ProjectReference Include="..\ServiceBusEmulator\ServiceBusEmulator.csproj" />
   </ItemGroup>

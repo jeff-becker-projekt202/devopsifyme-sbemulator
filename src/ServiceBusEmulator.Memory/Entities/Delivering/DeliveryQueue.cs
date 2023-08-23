@@ -4,7 +4,7 @@ using System.Collections.Concurrent;
 
 namespace ServiceBusEmulator.Memory.Entities.Delivering;
 
-public sealed class DeliveryQueue : IDeliveryQueue, IDisposable
+public sealed class DeliveryQueue :  IDisposable
 {
     private bool _disposed;
     private long _sequence;
