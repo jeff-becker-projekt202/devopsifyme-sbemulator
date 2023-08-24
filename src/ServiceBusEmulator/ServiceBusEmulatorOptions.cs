@@ -1,4 +1,4 @@
-﻿namespace ServiceBusEmulator.Abstractions.Options
+﻿namespace ServiceBusEmulator
 {
     /// <summary>
     /// Service bus simulator settings.

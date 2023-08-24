@@ -1,6 +1,4 @@
-﻿using ServiceBusEmulator.Memory.Entities;
-
-namespace ServiceBusEmulator.Memory;
+﻿namespace ServiceBusEmulator.Memory;
 public class MemoryBackendOptions
 {
     public List<string> Topics { get; set; } = new List<string>();

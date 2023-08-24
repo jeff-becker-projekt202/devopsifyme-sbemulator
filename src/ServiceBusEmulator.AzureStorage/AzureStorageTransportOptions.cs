@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ServiceBusEmulator.AzureStorage;
+﻿namespace ServiceBusEmulator.AzureStorage;
 public class MemoryTransportOptions
 {
     public string ConnectionString { get; set; } = "UseDevelopmentStorage=true";

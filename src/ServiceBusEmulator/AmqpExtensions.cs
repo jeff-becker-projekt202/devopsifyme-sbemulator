@@ -1,22 +1,20 @@
 ﻿using Amqp;
-using Amqp.Listener;
 using Amqp.Types;
-using ServiceBusEmulator.Azure;
 
 namespace ServiceBusEmulator
 {
-    internal static class AmqpExtensions
+    public static class AmqpExtensions
     {
         private static readonly Symbol XOptSequenceNumber = "x-opt-sequence-number";
 
-        internal static Message Clone(this Message message)
+        public static Message Clone(this Message message)
         {
             return message == null
                         ? null
                         : Message.Decode(message.Encode());
         }
 
-        internal static Message AddSequenceNumber(this Message message, long sequence)
+        public static Message AddSequenceNumber(this Message message, long sequence)
         {
             if (message != null)
             {
@@ -29,10 +27,5 @@ namespace ServiceBusEmulator
             return message;
         }
 
-        public static void EnableAzureSaslMechanism(this ConnectionListener.SaslSettings sasl)
-        {
-            var profile = new AzureSaslProfile();
-            sasl.EnableMechanism(profile.Mechanism, profile);
-        }
     }
 }

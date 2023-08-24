@@ -3,7 +3,7 @@ using Amqp.Framing;
 
 namespace ServiceBusEmulator.Memory.Entities.Delivering;
 
-public sealed class Delivery : IDelivery, IDisposable
+public sealed class Delivery :   IDisposable
 {
     private bool _disposed;
     private readonly ManualResetEventSlim _processedEvent = new(false);

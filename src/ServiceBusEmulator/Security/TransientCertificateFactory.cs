@@ -1,5 +1,4 @@
-﻿using Amqp.Types;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Formats.Asn1;
 using System.Runtime.InteropServices;
@@ -12,7 +11,7 @@ public class TransientCertificateFactory : CertificateFactory
     private readonly string _distingushedName;
     private readonly List<string> _alternativeNames;
 
-    public TransientCertificateFactory(string distingushedName, List<string> alternativeNames)
+    public TransientCertificateFactory(string distingushedName, List<string> alternativeNames, bool autoInstall) : base(autoInstall)
     {
         _distingushedName = distingushedName;
         _alternativeNames = alternativeNames;
@@ -39,16 +38,6 @@ public class TransientCertificateFactory : CertificateFactory
     {
         var subject = new X500DistinguishedName(distingushedName);
 
-        //using var store = new X509Store(StoreName.My, StoreLocation.CurrentUser);
-        //using X509Store store = new(StoreName.Root, StoreLocation.CurrentUser);
-        //store.Open(OpenFlags.ReadOnly);
-
-        // Try to retrieve the existing development certificates from the specified store.
-        // If no valid existing certificate was found, create a new encryption certificate.
-        //var certificate = store.Certificates.Find(X509FindType.FindBySubjectDistinguishedName, subject.Name, validOnly: false)
-        //    .OfType<X509Certificate2>()
-        //    .FirstOrDefault(static cc => cc.NotBefore < DateTime.Now && cc.NotAfter > DateTime.Now);
-
         using var algorithm = RSA.Create(2048); 
 
         var request = new CertificateRequest(subject, algorithm, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
@@ -64,22 +53,22 @@ public class TransientCertificateFactory : CertificateFactory
             certificate.FriendlyName = "ServiceBusEmulator Certificate";
         }
 
-        //// Note: CertificateRequest.CreateSelfSigned() doesn't mark the key set associated with the certificate
-        //// as "persisted", which eventually prevents X509Store.Add() from correctly storing the private key.
-        //// To work around this issue, the certificate payload is manually exported and imported back
-        //// into a new X509Certificate2 instance specifying the X509KeyStorageFlags.PersistKeySet flag.
-        //var data = certificate.Export(X509ContentType.Pfx, string.Empty);
+        // Note: CertificateRequest.CreateSelfSigned() doesn't mark the key set associated with the certificate
+        // as "persisted", which eventually prevents X509Store.Add() from correctly storing the private key.
+        // To work around this issue, the certificate payload is manually exported and imported back
+        // into a new X509Certificate2 instance specifying the X509KeyStorageFlags.PersistKeySet flag.
+        var data = certificate.Export(X509ContentType.Pfx, string.Empty);
 
-        //try
-        //{
-        //    var flags = X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.Exportable;
-        //    certificate = new X509Certificate2(data, string.Empty, flags);
-        //}
+        try
+        {
+            var flags = X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.Exportable;
+            certificate = new X509Certificate2(data, string.Empty, flags);
+        }
 
-        //finally
-        //{
-        //    Array.Clear(data, 0, data.Length);
-        //}
+        finally
+        {
+            Array.Clear(data, 0, data.Length);
+        }
         return certificate;
     }
 

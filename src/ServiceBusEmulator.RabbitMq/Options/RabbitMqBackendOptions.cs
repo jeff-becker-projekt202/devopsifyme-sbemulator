@@ -6,5 +6,6 @@
         public string Password { get; set; } = "password";
         public string Host { get; set; } = "localhost";
         public int Port { get; set; } = 5672;
+        public List<string> Channels { get; set; } = new List<string>();
     }
 }
