@@ -5,7 +5,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using ServiceBusEmulator.Abstractions;
 using ServiceBusEmulator.Abstractions.Configuration;
 using ServiceBusEmulator.Abstractions.Options;
-using ServiceBusEmulator.Memory.Entities;
+
 
 
 namespace ServiceBusEmulator.Memory;
@@ -17,10 +17,12 @@ public class MemoryBackend : IBackend
     public void ApplyConfiguration(IWebAppBuilder builder)
     {
         _ = builder.Services.AddSingleton<ILinkProcessor, InMemoryLinkProcessor>();
-        _ = builder.Services.AddSingleton<IEntityLookup, EntityLookup>();
+        //_ = builder.Services.AddSingleton<IEntityLookup, EntityLookup>();
+        _ = builder.Services.AddSingleton<ChannelMap>();
         _ = builder.Services.AddSingleton<IHealthCheck, InMemoryHealthCheck>();
         _ = builder.Services.AddOptions<MemoryBackendOptions>().BindConfiguration(ConfigSectionPath);
         _ = builder.Services.AddHealthChecks().AddCheck<InMemoryHealthCheck>("in-memory");
+        //_ = builder.Services.AddSingleton<IHostedService, MemoryWorker>();
     }
     private readonly SwitchMapBuilder<MemoryBackendOptions> _swtichMap =
         SwitchMapBuilder<MemoryBackendOptions>.Create(ConfigSectionPath)

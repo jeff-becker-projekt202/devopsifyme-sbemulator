@@ -1,6 +1,7 @@
-﻿using Amqp.Framing;
+﻿using Amqp;
+using Amqp.Framing;
 using Amqp.Listener;
-using ServiceBusEmulator.Memory.Entities;
+using System.Collections.Concurrent;
 
 namespace ServiceBusEmulator.Memory.Endpoints;
 
@@ -8,11 +9,11 @@ namespace ServiceBusEmulator.Memory.Endpoints;
 
 internal sealed class IncomingLinkEndpoint : LinkEndpoint
 {
-    private readonly IEntity _entity;
+    private readonly ConcurrentQueue<Message> _queue;
 
-    internal IncomingLinkEndpoint(IEntity entity)
+    internal IncomingLinkEndpoint(ConcurrentQueue<Message> queue)
     {
-        _entity = entity;
+        _queue = queue;
     }
 
     public override void OnLinkClosed(ListenerLink link, Error error)
@@ -22,7 +23,7 @@ internal sealed class IncomingLinkEndpoint : LinkEndpoint
 
     public override void OnMessage(MessageContext messageContext)
     {
-        _entity.Post(messageContext.Message.Clone());
+        _queue.Enqueue(messageContext.Message.Clone());
         messageContext.Complete();
     }
 

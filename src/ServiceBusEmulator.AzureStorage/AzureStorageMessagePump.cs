@@ -1,15 +1,17 @@
 ﻿using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace ServiceBusEmulator.AzureStorage;
-public class AzureStorageMessagePump : IHostedService
+public class AzureStorageMessagePump : BackgroundService
 {
-    public Task StartAsync(CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
+    private readonly ILogger<AzureStorageMessagePump> _logger;
 
-    public Task StopAsync(CancellationToken cancellationToken)
+    public AzureStorageMessagePump( ILogger<AzureStorageMessagePump> logger)
     {
-        throw new NotImplementedException();
+        _logger = logger;
+    }
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+
     }
 }

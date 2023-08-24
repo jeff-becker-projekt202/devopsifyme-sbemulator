@@ -1,9 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-using ServiceBusEmulator.Abstractions.Security;
+﻿using ServiceBusEmulator.Abstractions.Security;
 using System;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
 
 namespace ServiceBusEmulator.Security;
@@ -28,9 +25,16 @@ public abstract class CertificateFactory : IServerCertificateFactory
         }
         if(_autoInstall)
         {
-            using var store = new X509Store(StoreName.My, StoreLocation.CurrentUser);
+            //When running on windows this will automaticall install the generated cert with a prompt to the user about if they want to trust it
+            //Think what happens with visual studio when you're first setting up a dotnet core web project with SSL
+            using var store = new X509Store(StoreName.Root, StoreLocation.CurrentUser);
             store.Open(OpenFlags.ReadWrite);
-            store.Add(cert);
+            var existing = store.Certificates.Find(X509FindType.FindByThumbprint, cert.Thumbprint, false)
+                .OfType<X509Certificate2>();
+            if(existing == null)
+            {
+                store.Add(cert);
+            }            
         }
         return cert;
     }

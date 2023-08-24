@@ -4,21 +4,20 @@ using Amqp.Listener;
 using Microsoft.Extensions.Logging;
 using ServiceBusEmulator.Abstractions.Security;
 using ServiceBusEmulator.Memory.Endpoints;
-using ServiceBusEmulator.Memory.Entities;
-using ServiceBusEmulator.Memory.Entities.Delivering;
 
 namespace ServiceBusEmulator.Memory;
 
 internal class InMemoryLinkProcessor : ILinkProcessor
 {
     private readonly ISecurityContext _securityContext;
-    private readonly IEntityLookup _entityLookup;
+    private readonly ChannelMap _channelMap;
+
     private readonly ILogger _logger;
 
-    public InMemoryLinkProcessor(ISecurityContext securityContext, IEntityLookup entityLookup, ILogger<InMemoryLinkProcessor> logger)
+    public InMemoryLinkProcessor(ISecurityContext securityContext, ChannelMap channelMap, ILogger<InMemoryLinkProcessor> logger)
     {
         _securityContext = securityContext;
-        _entityLookup = entityLookup;
+        _channelMap = channelMap;
         _logger = logger;
     }
 
@@ -50,36 +49,31 @@ internal class InMemoryLinkProcessor : ILinkProcessor
 
     private void AttachIncomingLink(AttachContext attachContext, Target target)
     {
-        IEntity entity = _entityLookup.Find(target.Address);
-        if (entity == null)
+        var queue = _channelMap.GetIncoming(target.Address);
+
+        if (queue == null)
         {
-            attachContext.Complete(new Error(ErrorCode.NotFound) { Description = "Entity not found." });
+            attachContext.Complete(new Error(ErrorCode.NotFound) { Description = $"Entity not found \"{target.Address}\"." });
             _logger.LogError($"Could not attach incoming link to non-existing entity '{target.Address}'.");
             return;
         }
 
-        var incomingLinkEndpoint = new IncomingLinkEndpoint(entity);
+        var incomingLinkEndpoint = new IncomingLinkEndpoint(queue);
         attachContext.Complete(incomingLinkEndpoint, 300);
         _logger.LogDebug($"Attached incoming link to entity '{target.Address}'.");
     }
 
     private void AttachOutgoingLink(AttachContext attachContext, Source source)
     {
-        IEntity entity = _entityLookup.Find(source.Address);
-        if (entity == null)
+        var queue = _channelMap.GetIncoming(source.Address);
+        if (queue == null)
         {
-            attachContext.Complete(new Error(ErrorCode.NotFound) { Description = "Entity not found." });
+            attachContext.Complete(new Error(ErrorCode.NotFound) { Description = $"Entity not found \"{source.Address}\"." });
             _logger.LogError($"Could not attach outgoing link to non-existing entity '{source.Address}'.");
             return;
         }
 
-        DeliveryQueue queue = entity.DeliveryQueue;
-        if (queue == null)
-        {
-            attachContext.Complete(new Error(ErrorCode.NotFound) { Description = "Queue not found." });
-            _logger.LogError($"Could not attach outgoing link to non-existing queue '{source.Address}'.");
-            return;
-        }
+
 
         var outgoingLinkEndpoint = new OutgoingLinkEndpoint(queue);
         attachContext.Complete(outgoingLinkEndpoint, 0);
