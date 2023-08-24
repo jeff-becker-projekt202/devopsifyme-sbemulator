@@ -29,6 +29,7 @@ public abstract class CertificateFactory : IServerCertificateFactory
         if(_autoInstall)
         {
             using var store = new X509Store(StoreName.My, StoreLocation.CurrentUser);
+            store.Open(OpenFlags.ReadWrite);
             store.Add(cert);
         }
         return cert;
@@ -54,6 +55,7 @@ public abstract class CertificateFactory : IServerCertificateFactory
         }
         else
         {
+            //Todo Consider writing this out to a temp directory and reloading instead of recreating every time
             if (!cfg.AlternativeNames.Any())
             {
                 cfg.AlternativeNames.Add("sbemulator");
@@ -65,7 +67,7 @@ public abstract class CertificateFactory : IServerCertificateFactory
             {
                 cfg.AlternativeNames.Add("localhost");
             }
-            return new TransientCertificateFactory(cfg.DistinguishedName, cfg.AlternativeNames, cfg.AutoInstall);
+            return new AutoGenerateCert(cfg.DistinguishedName, cfg.AlternativeNames, cfg.AutoInstall);
         }
     }
 

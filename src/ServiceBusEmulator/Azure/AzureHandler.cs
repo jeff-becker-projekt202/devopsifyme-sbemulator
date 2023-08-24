@@ -4,11 +4,10 @@ using System;
 
 namespace ServiceBusEmulator.Azure
 {
-    internal sealed class AzureHandler : IHandler
+    public sealed class AzureHandler : IHandler
     {
-        public static AzureHandler Instance { get; } = new AzureHandler();
-
-        private AzureHandler() { }
+        
+        public AzureHandler() { }
 
         public bool CanHandle(EventId id)
         {
