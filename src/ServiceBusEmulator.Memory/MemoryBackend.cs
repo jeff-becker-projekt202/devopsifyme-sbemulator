@@ -1,4 +1,5 @@
 ﻿using Amqp.Listener;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using ServiceBusEmulator.Abstractions;
@@ -12,7 +13,7 @@ public class MemoryBackend : IBackend
 {
     private const string ConfigSectionPath = "Emulator:Memory";
 
-    public string Name => "Root";
+    public string Name => "Memory";
     public void ApplyConfiguration(IWebAppBuilder builder)
     {
         _ = builder.Services.AddSingleton<ILinkProcessor, InMemoryLinkProcessor>();
@@ -23,9 +24,10 @@ public class MemoryBackend : IBackend
     }
     private readonly SwitchMapBuilder<MemoryBackendOptions> _swtichMap =
         SwitchMapBuilder<MemoryBackendOptions>.Create(ConfigSectionPath)
-        .Add("queue", x => x.Queues)
-        .Add("topic", x => x.Topics)
-        .Add("subscription", x => x.Subscriptions);
+            .Add("memory-queue", x => x.Queues)
+            .Add("memory-topic", x => x.Topics)
+            .Add("memory-subscription", x => x.Subscriptions);
     public IMapSwitches SwitchMappings => _swtichMap.Mapper;
+    public bool ShouldUse(IConfiguration configuration) => String.Compare(configuration.GetSection("Emulator:Backend").Value ?? Name, Name, true) == 0;
 
 }

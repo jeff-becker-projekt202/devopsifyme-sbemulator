@@ -6,7 +6,7 @@
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       },
-      "commandLineArgs": "--backend=memory"
+      "commandLineArgs": "--backend=memory --memory-queue=abcde --memory-queue=defg --memory-topic=aaa/bbb --memory-topic defg/hijk"
     }
   }
 }

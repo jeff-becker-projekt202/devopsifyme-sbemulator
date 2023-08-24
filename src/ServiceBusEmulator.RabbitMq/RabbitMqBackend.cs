@@ -43,8 +43,7 @@ public class RabbitMqBackend : IBackend
     }
     private readonly SwitchMapBuilder<RabbitMqBackendOptions> _swtichMap =
         SwitchMapBuilder<RabbitMqBackendOptions>.Create(ConfigSectionPath)
-            .Add("channel", x => x.Channels)
-            .Add("rabbitmq:channel", x=>x.Channels)
+            .Add("rabbitmq-channel", x=>x.Channels)
             .Add("rabbitmq-user", x=>x.Username)
             .Add("rabbitmq-password",x=>x.Password)
             .Add("rabbitmq-host", x=>x.Host)

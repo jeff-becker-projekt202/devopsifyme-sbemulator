@@ -1,33 +1,35 @@
-﻿namespace ServiceBusEmulator.Host;
+﻿using Microsoft.Extensions.Configuration.CommandLine;
+using ServiceBusEmulator.Abstractions.Configuration;
 
-public class CommandLineHelper
+namespace ServiceBusEmulator.Host;
+
+public static class CommandLineHelper
 {
-    public static string[] TransformArgs(string[] args)
+    public static IConfigurationBuilder AddBackendCommandLineSwitch(this IConfigurationBuilder builder, IEnumerable<string> args)
     {
-        return IndexifyArgs(args);
+        builder.Add(new GenericConfigurationSource((b)=> new BackendSwitchCommandLineProvider(args)));
+        return builder;
     }
-
-    // This function turns repeated arguments such as "--queue abcd --queue defg" into indexed arguments "--queue:0 abcd --queue:1 defg"
-    // so they can map into the configs correctly
-    private static string[] IndexifyArgs(string[] args)
+    public static IConfigurationBuilder AddEmulatorHostCommandline(this IConfigurationBuilder builder, IEnumerable<string> args, IMapSwitches switchMapper)
     {
-        var rewriteTracker = new Dictionary<string, List<int>>();
-        for (int i = 0; i < args.Length; i++)
+        builder.Add(new GenericConfigurationSource((b) => new EmulatorHostCommandLineConfigurationProvider(args, switchMapper)));
+        return builder;
+    }
+    public class BackendSwitchCommandLineProvider : CommandLineConfigurationProvider
+    {
+        public const string BackendConfigKey = "Emulator:Backend";
+        public BackendSwitchCommandLineProvider(IEnumerable<string> args) : base(args, new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+    {
+         {"--backend",BackendConfigKey}
+    })
         {
-            if (!rewriteTracker.ContainsKey(args[i]))
-            {
-                rewriteTracker[args[i]] = new List<int>();
-            }
-            rewriteTracker[args[i]].Add(i);
         }
-        var rewritesToExecute = rewriteTracker.Where(p => p.Value.Count > 1);
-        foreach (var (key, indexes) in rewritesToExecute)
+        public override void Load()
         {
-            for (int i = 0; i < indexes.Count; i++)
-            {
-                args[indexes[i]] = $"{key}:{i}";
-            }
+            base.Load();
+            Data = Data.Where(d => d.Key == BackendConfigKey).ToDictionary(x => x.Key, x => x.Value, StringComparer.OrdinalIgnoreCase);
         }
-        return args;
     }
 }
+
+

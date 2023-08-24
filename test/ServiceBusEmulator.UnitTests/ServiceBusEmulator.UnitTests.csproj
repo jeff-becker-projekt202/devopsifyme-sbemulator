@@ -26,6 +26,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\src\ServiceBusEmulator.Abstractions\ServiceBusEmulator.Abstractions.csproj" />
+		<ProjectReference Include="..\..\src\ServiceBusEmulator.AzureStorage\ServiceBusEmulator.AzureStorage.csproj" />
+		<ProjectReference Include="..\..\src\ServiceBusEmulator.Host\ServiceBusEmulator.Host.csproj" />
+		<ProjectReference Include="..\..\src\ServiceBusEmulator.Memory\ServiceBusEmulator.Memory.csproj" />
+		<ProjectReference Include="..\..\src\ServiceBusEmulator.RabbitMq\ServiceBusEmulator.RabbitMq.csproj" />
 		<ProjectReference Include="..\..\src\ServiceBusEmulator\ServiceBusEmulator.csproj" />
 	</ItemGroup>
 </Project>

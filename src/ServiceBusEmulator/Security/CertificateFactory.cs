@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using ServiceBusEmulator.Abstractions.Security;
 using System;
 using System.Linq;
@@ -36,55 +37,36 @@ public abstract class CertificateFactory : IServerCertificateFactory
 
     public X509Certificate2 Load() => _serverCert.Value;
 
-    public static IServerCertificateFactory FromConfig(IConfiguration cfg)
+    public static IServerCertificateFactory FromConfig(ServerCertificateOptions cfg)
     {
-        var thumbprint = cfg.GetSection("Emulator:ServerCertificate:Thumbprint")?.Value;
-        var (path, password) = (cfg.GetSection("Emulator:ServerCertificate:Path")?.Value, cfg.GetSection("Emulator:ServerCertificate:Password")?.Value);
-        var certificateBinary = cfg.GetSection("Emulator:ServerCertificate:Value")?.Value;
-        bool autoInstall = GetInstallServerCert(cfg); ;
-        if (!string.IsNullOrEmpty(thumbprint))
+        
+        if (!string.IsNullOrEmpty(cfg.Thumbprint))
         {
-            return new LocalStoreCertificateFactory(thumbprint, autoInstall);
+            return new LocalStoreCertificateFactory(cfg.Thumbprint, cfg.AutoInstall);
         }
-        else if (!string.IsNullOrEmpty(path) && password != null /*having an empty string as the password is a valid case*/)
+        else if (!string.IsNullOrEmpty(cfg.Path) && cfg.Password != null /*having an empty string as the password is a valid case*/)
         {
-            return new FileCertificateFactory(path, password, autoInstall);
+            return new FileCertificateFactory(cfg.Path, cfg.Password, cfg.AutoInstall);
         }
-        else if (!string.IsNullOrEmpty(certificateBinary))
+        else if (!string.IsNullOrEmpty(cfg.Value))
         {
-            return new LiteralCertificateFactory(certificateBinary, autoInstall);
+            return new LiteralCertificateFactory(cfg.Value, cfg.AutoInstall);
         }
         else
         {
-            var altNamesConfig = cfg.GetSection("Emulator:ServerCertificate:AlternativeNames");
-            var distingushedName = cfg.GetSection("Emulator:ServerCertificate:DistinguishedName")?.Value ?? $"CN=devopsifyme-local.servicebus.windows.net,O=server";
-            
-            var altNames = altNamesConfig.GetChildren().Select(c => c.Value).ToList();
-            if (!altNames.Any())
+            if (!cfg.AlternativeNames.Any())
             {
-                altNames.Add("sbemulator");
-                altNames.Add("emulator");
-                altNames.Add("localhost");
+                cfg.AlternativeNames.Add("sbemulator");
+                cfg.AlternativeNames.Add("emulator");
+                cfg.AlternativeNames.Add("localhost");
 
             }
-            if (!altNames.Contains("localhost"))
+            if (!cfg.AlternativeNames.Contains("localhost"))
             {
-                altNames.Add("localhost");
+                cfg.AlternativeNames.Add("localhost");
             }
-            return new TransientCertificateFactory(distingushedName, altNames, autoInstall);
+            return new TransientCertificateFactory(cfg.DistinguishedName, cfg.AlternativeNames, cfg.AutoInstall);
         }
     }
 
-    private static bool GetInstallServerCert(IConfiguration cfg)
-    {
-        var cfgValue = cfg.GetSection("Emulator:ServerCertificate:AutoInstall")?.Value?.ToLowerInvariant();
-        if (!string.IsNullOrEmpty(cfgValue))
-        {
-            return cfgValue == "true" || cfgValue == "1" || cfgValue == "yes";
-        }
-        // installing the server cert will show the "Do you want to trust this cert" prompt on windows
-        // we default to "true" here so that those devs can just run the emulator with fewer install 
-        // steps
-        return RuntimeInformation.IsOSPlatform(OSPlatform.Windows); 
-    }
 }

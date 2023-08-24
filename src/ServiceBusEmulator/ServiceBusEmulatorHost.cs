@@ -15,7 +15,6 @@ namespace ServiceBusEmulator
         private readonly Func<IContainerHost> _hostFactory;
         private readonly ILinkProcessor _linkProcessor;
         private readonly CbsRequestProcessor _cbsRequestProcessor;
-        private readonly IServerCertificateFactory _certificateFactory;
         private readonly ILogger _logger;
 
         public ServiceBusEmulatorOptions Settings { get; }
@@ -24,13 +23,11 @@ namespace ServiceBusEmulator
             Func<IContainerHost> hostFactory,
             ILinkProcessor linkProcessor, 
             CbsRequestProcessor cbsRequestProcessor, 
-            IServerCertificateFactory certificateFactory, 
             ILogger<ServiceBusEmulatorHost> logger)
         {
             _hostFactory = hostFactory;
             _linkProcessor = linkProcessor;
             _cbsRequestProcessor = cbsRequestProcessor;
-            _certificateFactory = certificateFactory;
             _logger = logger;
         }
 

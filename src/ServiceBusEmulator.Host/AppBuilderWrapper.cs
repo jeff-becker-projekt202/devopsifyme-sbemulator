@@ -21,4 +21,6 @@ public class AppBuilderWrapper : IWebAppBuilder
     public ILoggingBuilder Logging => _builder.Logging;
 
     public WebApplication Build() => _builder.Build();
+
+    public string DebugConfig => ((IConfigurationRoot)_builder.Configuration).GetDebugView();
 }

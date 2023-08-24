@@ -1,23 +1,26 @@
 ﻿using ServiceBusEmulator.Abstractions.Configuration;
 
 namespace ServiceBusEmulator.Host;
-public class EmulatorHostCommandLineConfigurationSource : IConfigurationSource
+public class GenericConfigurationSource : IConfigurationSource
 {
-    private readonly IEnumerable<string> _args;
-    private readonly IMapSwitches _switchMapper;
-
-    public EmulatorHostCommandLineConfigurationSource(IEnumerable<string> args, IMapSwitches switchMapper)
+    private readonly Func<IConfigurationBuilder, IConfigurationProvider> _build;
+    public GenericConfigurationSource(Func<IConfigurationBuilder, IConfigurationProvider> _build)
     {
-        _args = args ?? throw new ArgumentNullException(nameof(args));
-        _switchMapper = switchMapper ?? throw new ArgumentNullException(nameof(switchMapper));
+        this._build = _build;
     }
-    public IConfigurationProvider Build(IConfigurationBuilder builder) => new EmulatorHostCommandLineConfigurationProvider(_args, _switchMapper);
+    public IConfigurationProvider Build(IConfigurationBuilder builder) => _build(builder);
+}
+
+public static class EmulatorHostCommandlineConfigurationExtensions
+{
+
 }
 /// <summary>
 /// A command line based <see cref="ConfigurationProvider"/>.
 /// </summary>
 public class EmulatorHostCommandLineConfigurationProvider : ConfigurationProvider
 {
+    private readonly IEnumerable<string> _args;
     private readonly IMapSwitches _switchMapper;
 
     /// <summary>
@@ -27,17 +30,12 @@ public class EmulatorHostCommandLineConfigurationProvider : ConfigurationProvide
     /// <param name="switchMappings">The switch mappings.</param>
     public EmulatorHostCommandLineConfigurationProvider(IEnumerable<string> args, IMapSwitches switchMapper)
     {
-
-        Args = args ?? throw new ArgumentNullException(nameof(args));
+        _args = args ?? throw new ArgumentNullException(nameof(args));
         _switchMapper = switchMapper ?? throw new ArgumentNullException(nameof(switchMapper));
 
     }
 
 
-    /// <summary>
-    /// The command line arguments.
-    /// </summary>
-    protected IEnumerable<string> Args { get; private set; }
 
     /// <summary>
     /// Loads the configuration data from the command line args.
@@ -47,7 +45,7 @@ public class EmulatorHostCommandLineConfigurationProvider : ConfigurationProvide
         var data = new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase);
         string key, value;
 
-        using (IEnumerator<string> enumerator = Args.GetEnumerator())
+        using (IEnumerator<string> enumerator = _args.GetEnumerator())
         {
             while (enumerator.MoveNext())
             {

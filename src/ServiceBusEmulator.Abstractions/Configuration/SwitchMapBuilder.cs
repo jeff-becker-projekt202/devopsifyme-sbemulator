@@ -5,14 +5,17 @@ namespace ServiceBusEmulator.Abstractions.Configuration;
 
 public class SwitchMapBuilder<TOptions> where TOptions : class
 {
-    private readonly List<IMapSwitches> _options = new();
+    private readonly List<IMapSwitches> _options;
     private readonly string _prefix;
     private readonly Lazy<AggregateSwitchMapper> _mapper;
-    public SwitchMapBuilder(string prefix)
+    private SwitchMapBuilder(string prefix, List<IMapSwitches> options)
     {
         _prefix = prefix.TrimEnd(':');
+        _options = options;
         _mapper = new Lazy<AggregateSwitchMapper>(() => new AggregateSwitchMapper(_options));
+
     }
+    private SwitchMapBuilder() { }
     public static SwitchMapBuilder<TOptions> Create(string prefix = "")
     {
         prefix = prefix.Trim(':');
@@ -20,8 +23,17 @@ public class SwitchMapBuilder<TOptions> where TOptions : class
         {
             prefix = $"Emulator:{prefix}";
         }
-        return new(prefix);
+        return new(prefix, new ());
     }
+    public SwitchMapBuilder<TOptions> Child<TChildProperty>(Expression<Func<TOptions, TChildProperty>> expression, Action<SwitchMapBuilder<TChildProperty>> build) where TChildProperty : class
+    {
+        var info = GetPropertyInfo(expression);
+
+        var child = new SwitchMapBuilder<TChildProperty>(_prefix + ":" + info.Name, _options);
+        build(child);
+        return this;
+    }
+
 
     public SwitchMapBuilder<TOptions> Add<TProperty>(string arg, Expression<Func<TOptions, TProperty>> expression)
     {
@@ -79,16 +91,4 @@ public class SwitchMapBuilder<TOptions> where TOptions : class
         }
             
     }
-}
-
-public class PairSwitchMapper : IMapSwitches
-{
-    private readonly Dictionary<string, string> _pairs;
-    public PairSwitchMapper(IEnumerable<(string arg, string configKey)> pairs)
-    {
-        _pairs = pairs.ToDictionary(x => x.arg, x => x.configKey, StringComparer.OrdinalIgnoreCase);
-    }
-    public bool CanHandle(string arg) => _pairs.ContainsKey(arg);
-
-    public string Transform(string arg) => _pairs.ContainsKey(arg) ? _pairs[arg] : arg;
 }
